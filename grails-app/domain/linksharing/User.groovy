@@ -10,7 +10,7 @@ class User {
     Byte[] photo
     Boolean admin
     Boolean active
-    static hasMany= [topics: Topic,subscriptions:Subscription, resourceRatings:ResourceRating, readingItems:ReadingItem , resources:Resource]
+    static hasMany= [topics: Topic,subscribes:Subscription, resourceRatings:ResourceRating, readingItems:ReadingItem , resources:Resource]
     Date dateCreated
     Date lastUpdated
 
@@ -23,5 +23,9 @@ class User {
         photo blank:true,nullable:true
         admin defaultValue: false
         active defaultValue: false
+    }
+    static mapping={
+        table "Users"
+        autoTimestamp true
     }
 }

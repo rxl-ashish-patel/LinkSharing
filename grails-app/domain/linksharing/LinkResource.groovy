@@ -5,4 +5,7 @@ class LinkResource  extends Resource{
     static constraints = {
         url nullable:false, blank:false
     }
+    static mapping={
+        table "LinkResources"
+    }
 }

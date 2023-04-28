@@ -9,4 +9,7 @@ class ResourceRating {
         user nullable: false
         score defaultValue: 0
     }
+    static mapping={
+        table "ResourceRatings"
+    }
 }

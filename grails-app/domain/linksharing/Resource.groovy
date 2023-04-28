@@ -5,7 +5,11 @@ class Resource {
     User createdBy
     Topic topic
     Date lastUpdated
+
     static constraints = {
 
+    }
+    static mapping={
+        table "Resources"
     }
 }

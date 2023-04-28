@@ -9,4 +9,7 @@ class ReadingItem {
         user nullable: false
         isRead defaultValue: false
     }
+    static mapping={
+        table "ReadingItems"
+    }
 }
