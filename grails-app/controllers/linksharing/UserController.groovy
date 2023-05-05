@@ -1,17 +1,50 @@
 package linksharing
 
+
 import grails.validation.ValidationException
 import static org.springframework.http.HttpStatus.*
 
 class UserController {
 
     UserService userService
+    ResourceService resourceService
 
     static allowedMethods = [save: "POST", update: "PUT", delete: "DELETE"]
 
     def index(Integer max) {
-        params.max = Math.min(max ?: 10, 100)
-        respond userService.list(params), model:[userCount: userService.count()]
+        if(session?.currentUser)
+            render view:'dashboard', model:[user:session.currentUser]
+        else{
+            render view:'/user/index' ,model:[recentShares:resourceService.recentShare(2)]
+        }
+
+
+    }
+    def login(){
+        def user=userService.validation(params)
+        if(user?:false){
+            session.currentUser=user
+            render view:'dashboard',model:[user:session.currentUser]
+        }
+        else {
+            redirect controller: '/'
+        }
+    }
+    def register() {
+//       println(params)
+
+        def user = userService.create(params)
+//        print params
+        try {
+            userService.save(user)
+        } catch (ValidationException e) {
+            respond user.errors, view:'/user/index'
+        }
+//        println user.firstName
+
+//        redirect action:  'index'
+        redirect('/')
+
     }
 
     def show(Long id) {
@@ -19,7 +52,9 @@ class UserController {
     }
 
     def create() {
-        respond new User(params)
+       // respond new
+
+        User(params)
     }
 
     def save(User user) {

@@ -2,17 +2,14 @@ package linksharing
 
 import grails.gorm.services.Service
 
-@Service(Topic)
-interface TopicService {
-
-    Topic get(Serializable id)
-
-    List<Topic> list(Map args)
-
-    Long count()
-
-    void delete(Serializable id)
-
-    Topic save(Topic topic)
-
+class TopicService{
+    List<Topic> recentShare(Long count){
+        Topics.list(offset:0,max:count,sort:'dateCreated',order:'desc')
+    }
+    Topic createTopic(Map m,Long id){
+        def topic= new Topic(m)
+        topic.createdBy=User.get(id);
+        print id
+        return topic
+    }
 }

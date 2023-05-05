@@ -1,0 +1,26 @@
+.userImage{
+    height:100px;
+    width:100px;
+    border-radius: 20px;
+}
+.userImageSmall{
+    height:60px;
+    width:55px;
+    margin: auto;
+    border-radius: 20px;
+}
+/*.fieldDiv {*/
+/*    display: flex-box;*/
+/*    justify-content:space-around;*/
+/*    align-items:center;*/
+/*    !*padding-top: 5px;*!*/
+/*    !* height: 60px; *!*/
+/*}*/
+.divHeading{
+    display: flex;
+    justify-content: space-between;
+    padding: 3px;
+}
+.login{
+    dispaly:flex-box;
+}

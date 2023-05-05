@@ -1,14 +1,16 @@
 package linksharing
 
-class Resource {
+abstract class Resource {
     String description
-    Topic topic
     Date lastUpdated
-    static belongsTo=[topic :Topic , creadtedBy:User]
+    Date dateCreated
+
+    static belongsTo=[topic :Topic , createdBy:User]
     static constraints = {
 
     }
     static mapping={
         table "Resources"
+        autoTimestamp(true)
     }
 }

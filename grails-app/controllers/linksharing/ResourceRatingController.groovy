@@ -5,7 +5,7 @@ import static org.springframework.http.HttpStatus.*
 
 class ResourceRatingController {
 
-    ResourceRatingService resourceRatingService
+    //ResourceRatingService resourceRatingService
 
     static allowedMethods = [save: "POST", update: "PUT", delete: "DELETE"]
 
