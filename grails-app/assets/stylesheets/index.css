@@ -1,6 +1,4 @@
-body{
-    background-color: #80bdff;
-}
+
 .logIn{
     display:flexbox;
     align-items: center;
@@ -64,4 +62,13 @@ img{
 .userImage{
     height: 80%;
     width: 80%;
+}
+h4 {
+    font-size: 24px;
+    margin-top: 0;
+}
+
+#save-btn,
+#cancel-btn {
+    display: none;
 }

@@ -6,6 +6,7 @@ import static org.springframework.http.HttpStatus.*
 class DocumentResourceController {
 
     DocumentResourceService documentResourceService
+    ResourceService resourceService
 
     static allowedMethods = [save: "POST", update: "PUT", delete: "DELETE"]
 
@@ -19,7 +20,8 @@ class DocumentResourceController {
     }
 
     def create() {
-        respond new DocumentResource(params)
+
+        save(resourceService.create(params))
     }
 
     def save(DocumentResource documentResource) {

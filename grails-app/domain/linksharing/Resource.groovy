@@ -6,6 +6,7 @@ abstract class Resource {
     Date dateCreated
 
     static belongsTo=[topic :Topic , createdBy:User]
+    static hasMany = [ratings:ResourceRating,readingItems:ReadingItem]
     static constraints = {
 
     }

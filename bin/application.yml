@@ -28,6 +28,7 @@ endpoints:
 
 ---
 grails:
+    serverURL:http://192.168.0.120:
     mime:
         disable:
             accept:
@@ -98,7 +99,7 @@ dataSource:
 environments:
     development:
         dataSource:
-            dbCreate: create-drop
+            dbCreate: update
             url: jdbc:oracle:thin:@localhost:1521/orcl
     test:
         dataSource:

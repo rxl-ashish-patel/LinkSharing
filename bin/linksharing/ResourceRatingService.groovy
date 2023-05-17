@@ -1,18 +1,23 @@
 package linksharing
 
-import grails.gorm.services.Service
 
-@Service(ResourceRating)
-interface ResourceRatingService {
+class ResourceRatingService {
 
-    ResourceRating get(Serializable id)
+    def create(Map params,User user){
+        def resource=Resource.get(params.resource)
+        def rating=new ResourceRating(params)
+        rating.user=user
+        rating.resource=resource
+    }
 
-    List<ResourceRating> list(Map args)
-
-    Long count()
-
-    void delete(Serializable id)
-
-    ResourceRating save(ResourceRating resourceRating)
+    def delete(Long id){
+        ResourceRating.get(id).delete(flush:true)
+    }
+    def get(Long id){
+        return ResourceRating.get(id)
+    }
+    def save(ResourceRating resourceRating){
+        resourceRating.save(flush:true)
+    }
 
 }

@@ -2,11 +2,11 @@
 <html>
     <head>
         <meta name="layout" content="main" />
-        <g:set var="entityName" value="${message(code: 'resource.label', default: 'Resource')}" />
+        <g:set var="entityName" value="${message(code: 'linkResource.label', default: 'LinkResource')}" />
         <title><g:message code="default.show.label" args="[entityName]" /></title>
     </head>
     <body>
-        <a href="#show-resource" class="skip" tabindex="-1"><g:message code="default.link.skip.label" default="Skip to content&hellip;"/></a>
+        <a href="#show-linkResource" class="skip" tabindex="-1"><g:message code="default.link.skip.label" default="Skip to content&hellip;"/></a>
         <div class="nav" role="navigation">
             <ul>
                 <li><a class="home" href="${createLink(uri: '/')}"><g:message code="default.home.label"/></a></li>
@@ -14,15 +14,15 @@
                 <li><g:link class="create" action="create"><g:message code="default.new.label" args="[entityName]" /></g:link></li>
             </ul>
         </div>
-        <div id="show-resource" class="content scaffold-show" role="main">
+        <div id="show-linkResource" class="content scaffold-show" role="main">
             <h1><g:message code="default.show.label" args="[entityName]" /></h1>
             <g:if test="${flash.message}">
             <div class="message" role="status">${flash.message}</div>
             </g:if>
-            <f:display bean="resource" />
-            <g:form resource="${this.resource}" method="DELETE">
+            <f:display bean="linkResource" />
+            <g:form resource="${this.linkResource}" method="DELETE">
                 <fieldset class="buttons">
-                    <g:link class="edit" action="edit" resource="${this.resource}"><g:message code="default.button.edit.label" default="Edit" /></g:link>
+                    <g:link class="edit" action="edit" resource="${this.linkResource}"><g:message code="default.button.edit.label" default="Edit" /></g:link>
                     <input class="delete" type="submit" value="${message(code: 'default.button.delete.label', default: 'Delete')}" onclick="return confirm('${message(code: 'default.button.delete.confirm.message', default: 'Are you sure?')}');" />
                 </fieldset>
             </g:form>

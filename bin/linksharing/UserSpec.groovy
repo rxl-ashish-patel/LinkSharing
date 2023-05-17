@@ -15,4 +15,5 @@ class UserSpec extends Specification implements DomainUnitTest<User> {
         expect:"fix me"
             true == false
     }
+
 }

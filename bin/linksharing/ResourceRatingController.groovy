@@ -19,7 +19,9 @@ class ResourceRatingController {
     }
 
     def create() {
-        respond new ResourceRating(params)
+
+        save(resourceRatingService.create(params,session.currentUser))
+        redirect controller:'user'
     }
 
     def save(ResourceRating resourceRating) {
@@ -35,13 +37,13 @@ class ResourceRatingController {
             return
         }
 
-        request.withFormat {
-            form multipartForm {
-                flash.message = message(code: 'default.created.message', args: [message(code: 'resourceRating.label', default: 'ResourceRating'), resourceRating.id])
-                redirect resourceRating
-            }
-            '*' { respond resourceRating, [status: CREATED] }
-        }
+//        request.withFormat {
+//            form multipartForm {
+//                flash.message = message(code: 'default.created.message', args: [message(code: 'resourceRating.label', default: 'ResourceRating'), resourceRating.id])
+//                redirect resourceRating
+//            }
+//            '*' { respond resourceRating, [status: CREATED] }
+//        }
     }
 
     def edit(Long id) {

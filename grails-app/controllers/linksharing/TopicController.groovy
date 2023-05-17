@@ -6,104 +6,65 @@ import static org.springframework.http.HttpStatus.*
 class TopicController {
 
     TopicService topicService
+    UserService userService
+    SubscriptionService subscriptionService
+    ResourceService resourceService
 
-    static allowedMethods = [save: "POST", update: "PUT", delete: "DELETE"]
+//    static allowedMethods = [save: "POST", update: "PUT", delete: "DELETE"]
 
-    def show(){
-        render topicService.recentShare(params.count)
+    def show( ){
+        render view: 'show', model:[topic: Topic.get(params.topic),user:userService.getUser(session?.currentUser?.id),resources:Topic.get(params.topic).resources,isSuscribed:params.isSuscribed]
     }
-//    def list(){
-//        log.info "Executing action $actionName"
-//
-//        render(view: 'index')
-//    }
-//    def index(Integer max) {
-//        params.max = Math.min(max ?: 10, 100)
-//        respond topicService.list(params), model:[topicCount: topicService.count()]
-//    }
-//
-//    def show(Long id) {
-//        respond topicService.get(id)
-//    }
-//
+
+
     def create() {
-        def topic=topicService.createTopic(params,session.currentUser.id)
-        topic.save(flush:true)
-        redirect action:'index', controller:'user'
+        save(topicService.createTopic(params,session.currentUser.id))
+//        redirect action:'index', controller:'user'
     }
-//
-//    def save(Topic topic) {
-//        if (topic == null) {
-//            notFound()
-//            return
-//        }
-//
-//        try {
-//            topicService.save(topic)
-//        } catch (ValidationException e) {
-//            respond topic.errors, view:'create'
-//            return
-//        }
-//
-//        request.withFormat {
-//            form multipartForm {
-//                flash.message = message(code: 'default.created.message', args: [message(code: 'topic.label', default: 'Topic'), topic.id])
-//                redirect topic
-//            }
-//            '*' { respond topic, [status: CREATED] }
-//        }
-//    }
-//
-//    def edit(Long id) {
-//        respond topicService.get(id)
-//    }
-//
-//    def update(Topic topic) {
-//        if (topic == null) {
-//            notFound()
-//            return
-//        }
-//
-//        try {
-//            topicService.save(topic)
-//        } catch (ValidationException e) {
-//            respond topic.errors, view:'edit'
-//            return
-//        }
-//
-//        request.withFormat {
-//            form multipartForm {
-//                flash.message = message(code: 'default.updated.message', args: [message(code: 'topic.label', default: 'Topic'), topic.id])
-//                redirect topic
-//            }
-//            '*'{ respond topic, [status: OK] }
-//        }
-//    }
-//
-//    def delete(Long id) {
-//        if (id == null) {
-//            notFound()
-//            return
-//        }
-//
-//        topicService.delete(id)
-//
-//        request.withFormat {
-//            form multipartForm {
-//                flash.message = message(code: 'default.deleted.message', args: [message(code: 'topic.label', default: 'Topic'), id])
-//                redirect action:"index", method:"GET"
-//            }
-//            '*'{ render status: NO_CONTENT }
-//        }
-//    }
-//
-//    protected void notFound() {
-//        request.withFormat {
-//            form multipartForm {
-//                flash.message = message(code: 'default.not.found.message', args: [message(code: 'topic.label', default: 'Topic'), params.id])
-//                redirect action: "index", method: "GET"
-//            }
-//            '*'{ render status: NOT_FOUND }
-//        }
-//    }
+
+    def save(Topic topic) {
+        if (topic == null) {
+            notFound()
+            return
+        }
+
+        try {
+            topicService.save(topic)
+            redirect controller: 'subscription',action: 'create',params:[topic:topic.id,user:session.currentUser.id,seriousness:Seriousness.VERY_SERIOUS]
+        } catch (ValidationException e) {
+            respond topic.errors, view:'create'
+            return
+        }
+
+    }
+
+    def update() {
+        println params
+        if (params == null) {
+            return
+        }
+
+        try {
+            topicService.update(params)
+            render "Success"
+
+        } catch (ValidationException e) {
+            respond topic.errors, view:'edit'
+            return
+        }
+
+    }
+    def searchData(){
+        print params
+          def posts=resourceService.searchData(params)
+          println posts
+          render view:'searchResultPage',model:[trendingTopics: topicService.trendingTopics(),topPosts: resourceService.topPosts(),searchPost:posts,user:userService.getUser(session?.currentUser?.id)]
+    }
+
+    def delete(Long id) {
+
+        topicService.delete(id)
+
+        redirect controller: 'user'
+    }
 }

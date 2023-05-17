@@ -5,21 +5,35 @@ import static org.springframework.http.HttpStatus.*
 
 class ResourceRatingController {
 
-    //ResourceRatingService resourceRatingService
+    ResourceRatingService resourceRatingService
+    UserService userService
+    TopicService topicService
 
-    static allowedMethods = [save: "POST", update: "PUT", delete: "DELETE"]
+//    static allowedMethods = [createUpdate: "POST", update: "PUT", delete: "DELETE"]
 
-    def index(Integer max) {
-        params.max = Math.min(max ?: 10, 100)
-        respond resourceRatingService.list(params), model:[resourceRatingCount: resourceRatingService.count()]
+
+    def showPost(){
+        println(params)
+        if(session?.currentUser!=null)
+            render view:'post',model:[resourc:Resource.get(params.resource),user:userService.getUser(session?.currentUser?.id),trendingTopics:topicService.trendingTopics()]
+        else
+            render view:'post',model:[resourc:Resource.get(params.resource),user:null]
     }
 
-    def show(Long id) {
-        respond resourceRatingService.get(id)
-    }
+    def createUpdate() {
+        println(params)
+        def rating=resourceRatingService.createUpdateRating(params)
+        if(rating.hasErrors()){
+            flash.params=['message':"unable to rate",code:'danger']
+            render view:'post',model: [resourc:rating.resource,user:session?.currentUser,errors:rating.errors.allErrors]
+            return
+        }
+        else{
+            flash.params=['message':"rating added successfully",code:'success']
+            render view:'_starRatingTemplate',model: [resourc:rating.resource,user:session?.currentUser]
+            return
+        }
 
-    def create() {
-        respond new ResourceRating(params)
     }
 
     def save(ResourceRating resourceRating) {
@@ -35,13 +49,6 @@ class ResourceRatingController {
             return
         }
 
-        request.withFormat {
-            form multipartForm {
-                flash.message = message(code: 'default.created.message', args: [message(code: 'resourceRating.label', default: 'ResourceRating'), resourceRating.id])
-                redirect resourceRating
-            }
-            '*' { respond resourceRating, [status: CREATED] }
-        }
     }
 
     def edit(Long id) {
@@ -61,39 +68,8 @@ class ResourceRatingController {
             return
         }
 
-        request.withFormat {
-            form multipartForm {
-                flash.message = message(code: 'default.updated.message', args: [message(code: 'resourceRating.label', default: 'ResourceRating'), resourceRating.id])
-                redirect resourceRating
-            }
-            '*'{ respond resourceRating, [status: OK] }
-        }
     }
 
-    def delete(Long id) {
-        if (id == null) {
-            notFound()
-            return
-        }
 
-        resourceRatingService.delete(id)
 
-        request.withFormat {
-            form multipartForm {
-                flash.message = message(code: 'default.deleted.message', args: [message(code: 'resourceRating.label', default: 'ResourceRating'), id])
-                redirect action:"index", method:"GET"
-            }
-            '*'{ render status: NO_CONTENT }
-        }
-    }
-
-    protected void notFound() {
-        request.withFormat {
-            form multipartForm {
-                flash.message = message(code: 'default.not.found.message', args: [message(code: 'resourceRating.label', default: 'ResourceRating'), params.id])
-                redirect action: "index", method: "GET"
-            }
-            '*'{ render status: NOT_FOUND }
-        }
-    }
 }

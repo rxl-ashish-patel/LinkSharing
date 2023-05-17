@@ -6,6 +6,8 @@ import static org.springframework.http.HttpStatus.*
 class LinkResourceController {
 
     LinkResourceService linkResourceService
+    ResourceService resourceService
+    UserService userService
 
     static allowedMethods = [save: "POST", update: "PUT", delete: "DELETE"]
 
@@ -19,7 +21,16 @@ class LinkResourceController {
     }
 
     def create() {
-        respond new LinkResource(params)
+            def linkResource=resourceService.create(params)
+            if(linkResource.hasErrors()){
+                flash.params=['message':"linkresource not added ",code:'danger']
+                render view: 'shareLinkTemplate', model:[topics: userService.getUser(session.currentUser.id).subscribes*.topic, user:userService.getUser(session.currentUser.id), errors:linkResource.errors.allErrors ]
+                return
+            }
+        else {
+                redirect controller: 'readingItem', action: 'addPostToSubscriberReadingItems', params: [topic: params.topic, user: params.createdBy, resource: linkResource.id]
+                return
+            }
     }
 
     def save(LinkResource linkResource) {
@@ -29,19 +40,19 @@ class LinkResourceController {
         }
 
         try {
-            linkResourceService.save(linkResource)
+            return linkResourceService.save(linkResource)
         } catch (ValidationException e) {
-            respond linkResource.errors, view:'create'
+            redirect controller:'user'
             return
         }
 
-        request.withFormat {
-            form multipartForm {
-                flash.message = message(code: 'default.created.message', args: [message(code: 'linkResource.label', default: 'LinkResource'), linkResource.id])
-                redirect linkResource
-            }
-            '*' { respond linkResource, [status: CREATED] }
-        }
+//        request.withFormat {
+//            form multipartForm {
+//                flash.message = message(code: 'default.created.message', args: [message(code: 'linkResource.label', default: 'LinkResource'), linkResource.id])
+//                redirect linkResource
+//            }
+//            '*' { respond linkResource, [status: CREATED] }
+//        }
     }
 
     def edit(Long id) {

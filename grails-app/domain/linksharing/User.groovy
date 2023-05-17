@@ -10,9 +10,11 @@ class User {
     String photo
     Boolean admin = false
     Boolean active = true
+    String resetToken
     static hasMany= [topics: Topic,subscribes:Subscription, resourceRatings:ResourceRating, readingItems:ReadingItem , resources:Resource]
     Date dateCreated
     Date lastUpdated
+
 
     static constraints = {
         email email:true,unique:true
@@ -42,6 +44,7 @@ class User {
         firstName blank:false,nullable:false
         lastName blank:false, nullable:false
         photo blank:true,nullable:true
+        resetToken nullable: true
     }
 
     static mapping={

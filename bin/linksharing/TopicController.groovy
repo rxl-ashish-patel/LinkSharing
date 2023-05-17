@@ -6,20 +6,21 @@ import static org.springframework.http.HttpStatus.*
 class TopicController {
 
     TopicService topicService
+    SubscriptionService subscriptionService
 
-    static allowedMethods = [save: "POST", update: "PUT", delete: "DELETE"]
+//    static allowedMethods = [save: "POST", update: "PUT", delete: "DELETE"]
 
-    def index(Integer max) {
-        params.max = Math.min(max ?: 10, 100)
-        respond topicService.list(params), model:[topicCount: topicService.count()]
+    def show( ){
+
+        render view: 'show', model:[topic: Topic.get(params.topic),user:User.get(session.currentUser.id),resources:Topic.get(params.topic).resources,isSuscribed:params.isSuscribed]
     }
-
-    def show(Long id) {
-        respond topicService.get(id)
+    def post(){
+        render view:'post',model:[resourc:Resource.get(params.resource),user:session.currentUser]
     }
 
     def create() {
-        respond new Topic(params)
+        save(topicService.createTopic(params,session.currentUser.id))
+//        redirect action:'index', controller:'user'
     }
 
     def save(Topic topic) {
@@ -30,32 +31,35 @@ class TopicController {
 
         try {
             topicService.save(topic)
+            redirect controller: 'subscription',action: 'create',params:[topic:topic.id,user:session.currentUser.id,seriousness:Seriousness.VERY_SERIOUS]
         } catch (ValidationException e) {
             respond topic.errors, view:'create'
             return
         }
-
-        request.withFormat {
-            form multipartForm {
-                flash.message = message(code: 'default.created.message', args: [message(code: 'topic.label', default: 'Topic'), topic.id])
-                redirect topic
-            }
-            '*' { respond topic, [status: CREATED] }
-        }
+//        redirect controller: '/'
+//        request.withFormat {
+//            form multipartForm {
+//                flash.message = message(code: 'default.created.message', args: [message(code: 'topic.label', default: 'Topic'), topic.id])
+//                redirect topic
+//            }
+//            '*' { respond topic, [status: CREATED] }
+//        }
     }
-
-    def edit(Long id) {
-        respond topicService.get(id)
-    }
-
-    def update(Topic topic) {
-        if (topic == null) {
-            notFound()
+//
+//    def edit(Long id) {
+//        respond topicService.get(id)
+//    }
+//
+    def update() {
+        println params
+        if (params == null) {
             return
         }
 
         try {
-            topicService.save(topic)
+            topicService.update(params)
+            render "Success"
+
         } catch (ValidationException e) {
             respond topic.errors, view:'edit'
             return
@@ -69,31 +73,28 @@ class TopicController {
             '*'{ respond topic, [status: OK] }
         }
     }
-
+//
     def delete(Long id) {
-        if (id == null) {
-            notFound()
-            return
-        }
 
         topicService.delete(id)
 
-        request.withFormat {
-            form multipartForm {
-                flash.message = message(code: 'default.deleted.message', args: [message(code: 'topic.label', default: 'Topic'), id])
-                redirect action:"index", method:"GET"
-            }
-            '*'{ render status: NO_CONTENT }
-        }
+//        request.withFormat {
+//            form multipartForm {
+//                flash.message = message(code: 'default.deleted.message', args: [message(code: 'topic.label', default: 'Topic'), id])
+//                redirect action:"index", controller: 'user'
+//            }
+//            '*'{ render status: NO_CONTENT }
+//        }
+        redirect controller: 'user'
     }
-
-    protected void notFound() {
-        request.withFormat {
-            form multipartForm {
-                flash.message = message(code: 'default.not.found.message', args: [message(code: 'topic.label', default: 'Topic'), params.id])
-                redirect action: "index", method: "GET"
-            }
-            '*'{ render status: NOT_FOUND }
-        }
-    }
+//
+//    protected void notFound() {
+//        request.withFormat {
+//            form multipartForm {
+//                flash.message = message(code: 'default.not.found.message', args: [message(code: 'topic.label', default: 'Topic'), params.id])
+//                redirect action: "index", method: "GET"
+//            }
+//            '*'{ render status: NOT_FOUND }
+//        }
+//    }
 }

@@ -1,107 +1,175 @@
+<%@ page import="linksharing.Seriousness; linksharing.DocumentResource; linksharing.Visibility" %>
 <!DOCTYPE html>
 <html lang="en">
 
-<g:render template="/headTemplate" model="[title: '', styles: ['index', 'dashboard']]"/>
+<g:render template="/headTemplate" model="[title: '', styles: ['index', 'dashboard'],javascript:['editTopicName','searchPageHandler','markAsRead','sendInviteHandler']]"/>
 
 
 <body>
 
 <div class="navBarBorder">
-    <g:render template="/navBarTemplate" model="[icons: ['createTopic', 'sendInvite', 'shareLink', 'shareDocument', 'user','down']]"/>
-    <g:render template="/sendInviteTemplate" model="[topics:[]]" />
-    <g:render template="/createTopicTemplate" model="[visibility:['public','Private']]" />
+    <g:render template="/navBarTemplate"
+              model="[icons: ['createTopic', 'sendInvite', 'shareLink', 'shareDocument', 'user', 'down'],user:user]"/>
+    <g:render template="/sendInviteTemplate" model="[topics: subscriptions*.topic]"/>
+    <g:render template="/createTopicTemplate"/>
+    <g:render template="/documentResource/shareDocumentTemplate" model="[topics: subscriptions*.topic, user: user]"/>
+    <g:render template="/linkResource/shareLinkTemplate" model="[topics: subscriptions*.topic, user: user]"/>
 </div>
+
+<g:if test="${flash?.params?.message}" >
+    <div id="message" class="alert alert-${flash?.params.code}  bg-${flash?.params.code} alert-dismissible fade show" role="alert">
+        ${flash.params.message}
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+</g:if>
+
 
 <div class="container-fluid p-4">
     <div class="row">
         <div class="container col-sm-5 mb-2">
-            <div class="card p-2">
-                <div class="container-fluid">
-                    <div class="row d-flex align-items-center">
-                        <div class="col-sm-4 ">
-                            <img class="card-img-top userImage" src="${resource(dir:'images',file:'user.svg')}" alt="Card image cap">
+            <g:render template="Templates/userTemplate" model="[user:user]"/>
+
+            <table id="Subscriptions" class="table table-striped display" style="width:100%">
+                <thead>
+                <tr class="bg-secondary">
+                    <th>
+                        <div class="d-flex justify-content-sm-between"><h6>Subscriptions:</h6>
+                            <a href="">View All</a>
                         </div>
-                        <div class="col-sm-1"></div>
-                        <div class="col-sm-7">
-                            <div class="card-block">
-                                <h5 class="card-title">User Name</h5>
-                            </div>
-                            <div class="card-block">
-                                <p>@Name</p>
-                            </div>
-                            <div class="card-block d-flex">
-                                <p class="col-sm-7"> subscriptions</p>
-                                <p class="col-sm-5">topics</p>
-                            </div>
-                            <div class="card-block d-flex">
-                                <a href="#" class="card-link col-sm-7">${user.subscribes.size()}</a>
-                                <a href="#" class="card-link col-sm-5">no</a>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class=" border mt-2 border bg-secondary rounded d-flex p-1">
-                <h5 class="col-sm-6 text-white">Subcriptions</h5>
-                <p class="col-sm-3"></p>
-                <a class="col-sm-3"> View All</a>
-            </div>
-            <div class="card p-1 bg-success bg-opacity-50">
-                <div class="container-fluid">
-                    <div class="row d-flex align-items-center">
-                        <div class="col-sm-2 ">
-                            <img class="card-img-top userImageSmall" src="${resource(dir:'images',file:'user.svg')}" alt="Card image cap">
-                        </div>
-                        <div class="col-sm-1"></div>
-                        <div class="col-sm-8">
-                            <div class="card-block">
-                                <h4 class="card-title">User Name</h4>
-                            </div>
-                            <div class="card-block d-flex">
-                                <p class="col-sm-4">@Name</p>
-                                <p class="col-sm-6"> subscriptions</p>
-                                <p class="col-sm-2">topics</p>
-                            </div>
-                            <div class="card-block d-flex">
-                                <a href="#" class="card-link col-sm-6">UnSuscribe</a>
-                                <a href="#" class="card-link col-sm-3">no</a>
-                                <a href="#" class="card-link col-sm-3">no</a>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="d-inline-flex justify-content-end">
-
-                            <select class="selectpicker show-menu-arrow col-sm-3 me-2">
-                                <option>Mustard</option>
-                                <option>Ketchup</option>
-                                <option>Relish</option>
-                            </select>
-                            <a class=""><img src="${resource(dir: "images", file: "sendInvite.svg")}"/></a>
-                        </div>
-
-
-
-                    </div>
-                </div>
-            </div>
-
-
+                    </th>
+                </tr>
+                </thead>
+                <tbody >
+                <g:each var="topic" in="${subscriptionsByLatestPost}">
+                    <tr><td>
+                        <g:render template="Templates/subscriptionsTemplate" model="[topic:topic,user:user]"/>
+                    </td></tr>
+                </g:each>
+                </tbody>
+            </table>
+            <table id="trendingTopics" class="table table-striped display" style="width:100%">
+                <thead>
+                <tr class="bg-secondary">
+                    <th>Trending Topics:</th>
+                </tr>
+                </thead>
+                <tbody>
+                <g:each var="topic" in="${trendingTopics}">
+                    <tr><td>
+                        <g:render template="Templates/trendingTopicTemplate" model="[topic: topic, user: user]"/>
+                    </td></tr>
+                </g:each>
+                </tbody>
+            </table>
         </div>
 
         <div class="container col-sm-7">
+            <table id="inboxItems" class="table table-striped display" style="width:100%">
+                <thead>
+                <tr class="bg-secondary">
+                    <th>Inbox:</th>
+                    <th>search</th>
+                </tr>
 
-
+                </thead>
+                <tbody >
+                <g:each var="readingItem" in="${user.readingItems.findAll { it.isRead == false }}">
+                    <tr id="${readingItem.id}">
+                        <td>
+                        <g:render template="Templates/inboxTemplate" model="[resourc:readingItem.resource,user:user,isSuscribed:true]"/>
+                        </td>
+                        <td >
+                            <div>
+                                <p>${readingItem.resource.topic.name}</p>
+                                <p>${readingItem.resource.createdBy.firstName}</p>
+                                <p>${readingItem.resource.createdBy.username}</p>
+                                <p>${readingItem.resource.description}</p>
+                            </div>
+                        </td>
+                    </tr>
+                </g:each>
+                </tbody>
+            </table>
 
         </div>
     </div>
-
 </div>
 <!-- Example split danger button -->
 
-<script>
+<g:javascript>
 
-</script>
+$(document).ready(function (){
+    //flash message hide
+    setTimeout(function (){
+        $("#message").hide();
+    },2000);
+
+    //visibility change
+
+    $(".updateVisibility").change(function (){
+        var topic=this.id
+        let visibility=this.value;
+        $.ajax({
+            type:'PUT',
+            data: { topic:topic, visibility:visibility },
+            url:"${createLink(controller: 'topic', action: 'update')}",
+            success: function(response) {
+                      window.location.reload()
+                     },
+             error: function(errorThrown) {
+                         console.log('Error:', errorThrown);
+                     }
+        });
+    });
+    // seriousness change
+    $(".updateSeriousness").change(function (){
+        let  topicuser=this.id.split('-')
+        let topic=topicuser[0]
+        let user=topicuser[1]
+        let seriousness=this.value
+        $.ajax({
+            type:'PUT',
+            data: { topic:topic, user:user,seriousness: seriousness},
+            url:"${createLink(controller: 'subscription', action: 'update')}",
+            success: function(response) {
+                console.log("topic----->>")
+                console.log($('.topic'))
+                        window.location.reload()
+                     },
+             error: function(errorThrown) {
+                         console.log('Error:', errorThrown);
+                     }
+        });
+    });
+    //inbox datatable
+    $("#inboxItems").dataTable({
+            "bLengthChange": false, // remove "Show" option
+            "pageLength": 20,
+            searchBuilder: {
+            columns: [1]
+        }
+        })
+    //hide the coloumn 2
+    $('#inboxItems').DataTable().column(1).visible(false);
+
+     //trendingtopic datatable
+    $("#trendingTopics").dataTable({
+            "bLengthChange": false, // remove "Show" option
+            "pageLength": 5,
+            "searching": false
+        })
+
+    //subscriptions datatable
+        $("#Subscriptions").dataTable({
+            "bLengthChange": false, // remove "Show" option
+            "pageLength": 5,
+            "searching": false
+        })
+
+    });
+
+
+</g:javascript>
 </body>
 
 </html>

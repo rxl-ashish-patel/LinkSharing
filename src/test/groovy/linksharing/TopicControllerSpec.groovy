@@ -218,6 +218,7 @@ class TopicControllerSpec extends Specification implements ControllerUnitTest<To
         response.redirectedUrl == '/topic/index'
         flash.message != null
     }
+
 }
 
 
