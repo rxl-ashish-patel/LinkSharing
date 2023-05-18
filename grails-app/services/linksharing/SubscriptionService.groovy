@@ -8,9 +8,13 @@ class SubscriptionService{
         return Subscription.getAll(subscriptionList as List)*.topic
     }
     Subscription create(Map params){
-        Subscription subscription=new Subscription(params)
-        subscription.topic=Topic.get(params.topic)
-        subscription.user=User.get(params.user)
+
+        def topic=Topic.get(params.topic)
+        def user=User.get(params.user)
+        println user
+        println topic
+        Subscription subscription=new Subscription(user:user,topic:topic,seriousness: params.seriousness)
+        subscription.save(flush:true)
         return subscription
 
     }
@@ -21,7 +25,8 @@ class SubscriptionService{
     def delete(Map params){
         Topic topic=Topic.get(params.topic)
         User user=User.get(params.user)
-        Subscription.findByTopicAndUser(topic,user).delete(flush:true)
+        def subscription=Subscription.findByTopicAndUser(topic,user).delete(flush:true)
+        return subscription
     }
 
 

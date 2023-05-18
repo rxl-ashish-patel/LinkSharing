@@ -1,5 +1,5 @@
 <nav class="navbar navbar-light bg-light justify-content-between">
-    <a class="navbar-brand" style="padding-left: 20px;color:blue;cursor: pointer;">Navbar</a>
+    <a class="navbar-brand" href='/' style="padding-left: 20px;color:blue;cursor: pointer;">LinkSharing</a>
 
     <div class="d-flex flex-row-reverse">
         <div class="p-1">
@@ -14,8 +14,8 @@
                             <li><a class="dropdown-item" href="${createLink(controller:'user',action:'profileUpdate',params:[userId:user.id])}" target="_blank">profile</a></li>
                             <g:if test="${user.admin==true}" >
                                 <li><a class="dropdown-item" href="${createLink(controller:'user',action:'userTableForAdmin',params:[userTypes:"all"])}" target="_blank">Users</a></li>
-                                <li><a class="dropdown-item" href="${createLink(controller:'user',action:'userTableForAdmin')}" target="_blank">Topics</a></li>
-                                <li><a class="dropdown-item" href="#">Posts</a></li>
+                                <li><a class="dropdown-item" href="${createLink(controller:'user',action:'topicTableForAdmin')}" target="_blank">Topics</a></li>
+                                <li><a class="dropdown-item" href="${createLink(controller:'user',action:'postTableForAdmin')}" target="_blank">Posts</a></li>
                             </g:if>
                             <li><a class="dropdown-item" href="/user/logout">Logout</a></li>
 

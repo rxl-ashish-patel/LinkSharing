@@ -2,7 +2,7 @@
 <!DOCTYPE html>
 <html lang="en">
 
-<g:render template="/headTemplate" model="[title: '', styles: ['index', 'dashboard'],javaScript:['markAsRead']]"/>
+<g:render template="/headTemplate" model="[title: 'Show Topic', styles: ['index', 'dashboard'],javaScript:['markAsRead']]"/>
 
 
 <body>
@@ -20,6 +20,7 @@
         <g:render template="/navBarTemplate"
                   model="[icons: []]"/>
     </g:else>
+
 </div>
 
 <g:if test="${flash.message}">

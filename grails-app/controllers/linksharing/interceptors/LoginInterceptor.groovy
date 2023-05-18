@@ -10,6 +10,7 @@ class LoginInterceptor {
         matchAll().excludes(controller:'resourceRating',action:'showPost')
                 .excludes(controller: 'user', action: 'index')
                 .excludes(controller:'topic',action:'searchData')
+                .excludes(controller:'topic',action:'filterTopPosts')
                 .excludes(controller: 'user', action: 'forgotPassword')
                 .excludes(controller: 'readingItems', action: 'create')
                 .excludes(controller:'subscriptions',action:'privateTopicSubscription')

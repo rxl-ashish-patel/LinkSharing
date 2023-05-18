@@ -32,14 +32,33 @@ class UserController {
         def user = userService.validation(params)
         if (user != null) {
             session.currentUser = user
-            flash.params=['message':"login successfull",code:'success']
+            flash.params = ['message': "login successfull", code: 'success']
             redirect controller: 'user'
         } else {
-            flash.params=['message':"login failure",code:'danger']
+            flash.params = ['message': "login failure", code: 'danger']
             redirect controller: 'user'
-         }
+        }
     }
 
+    def userSubscriptions(){
+        def user=userService.getUser(Integer.parseInt(params.userId))
+        print(user)
+        render view:'/user/Templates/_subscriptionDataTable',model:[subscriptionsByLatestPost:topicService.subscriptionsByLatestPost(user),user:user]
+    }
+
+    def trendingTopics(){
+        def user=userService.getUser(Integer.parseInt(params.userId))
+        render view:'/user/Templates/_trendingTopicsDataTable',model:[trendingTopics: topicService.trendingTopics(),user:user]
+    }
+
+    def updatedUser(){
+        def user=userService.getUser(Integer.parseInt(params.userId))
+        render view:'/user/Templates/_userTemplate',model:[user:user]
+    }
+    def updateTopics(){
+        def user=userService.getUser(Integer.parseInt(params.userId))
+        render view:'/user/Templates/_topicListSelector', model:[topics:user.subscribes*.topic]
+    }
     def register() {
 
            def user= userService.createUser(params)
@@ -131,7 +150,7 @@ class UserController {
     def showUserProfile(){
         def profileUser=userService.getUser(Integer.parseInt(params.userId))
         def topics,subscriptions
-        println params
+        println '' + params +' '+profileUser
         if(profileUser.id==session?.currentUser?.id || session.currentUser.admin){
             topics=profileUser.topics
             subscriptions=profileUser.subscribes*.topic
@@ -190,12 +209,7 @@ class UserController {
             else{
                 if(params.view=='admin'){
                 def user=userService.getUser(session.currentUser.id)
-                render view: 'admin', model: [user                     : user,
-                                              users                    : userService.userList("all"),
-                                              topics                   : userService.userTopics(user),
-                                              subscriptions            : userService.userSubscriptions(user),
-                                              subscriptionsByLatestPost: topicService.subscriptionsByLatestPost(user)
-                ]
+                render view: '/user/Templates/_userTableRow', model: [user:user]
                 return
                     }
             }
@@ -203,5 +217,13 @@ class UserController {
 
 
 
+    }
+
+    def topicTableForAdmin(){
+       render view:'/topic/topicShowForAdmin',model:[topics:Topic.list()]
+    }
+
+    def postTableForAdmin(){
+        render view:'/topic/postShowForAdmin',model:[posts:Resource.list()]
     }
 }

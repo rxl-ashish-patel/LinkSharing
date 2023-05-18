@@ -2,7 +2,7 @@
 <!DOCTYPE html>
 <html lang="en">
 
-<g:render template="/headTemplate" model="[title: '', styles: ['index', 'dashboard'],javascript:['userProfileUpdateHandler','editTopicName']]"/>
+<g:render template="/headTemplate" model="[title: 'Profile', styles: ['index', 'dashboard'],javascript:['userProfileUpdateHandler','editTopicName']]"/>
 
 
 <body>

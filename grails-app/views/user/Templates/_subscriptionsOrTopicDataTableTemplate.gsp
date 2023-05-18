@@ -24,7 +24,10 @@
                                 <div class="col-sm-5">
                                 <g:if test="${currentUser in topic.subscriptions*.user}">
                                   <g:select id="${topic.id +'-'+ currentUser.id}" name="seriousness" class="updateSeriousness" from="${linksharing.Seriousness.values()}" value="${topic.subscriptions.find{it.user==currentUser}.seriousness}"/>
-                                    <a class=""><img src="${resource(dir: "images", file: "sendInvite.svg")}"/></a>
+                                    <a data-bs-toggle="modal" data-bs-target="#sendPerticularInvite${topic.id}"
+                                       data-bs-whatever="sendPerticularInvite${topic.id}"><img
+                                    src="${resource(dir: "images", file: "sendInvite.svg")}"/></a>
+                                    <g:render template="Templates/sendPerticularInvite" model="[topic:topic]"/>
                                 </g:if>
                                 </div>
                                 <a href="${createLink(controller: 'user', action: 'showUserProfile', params: [userId: topic.createdBy.id])}" target="_blank"

@@ -2,7 +2,7 @@
 <!DOCTYPE html>
 <html lang="en">
 
-<g:render template="/headTemplate" model="[title: '', styles: ['index', 'dashboard', 'starRating'], javascript:['starRating']]"/>
+<g:render template="/headTemplate" model="[title: 'Post', styles: ['index', 'dashboard', 'starRating'], javascript:['starRating']]"/>
 
 
 <body>
@@ -21,7 +21,7 @@
                   model="[icons: []]"/>
     </g:else>
 </div>
-
+<div id="message">
 <g:if test="${flash?.params?.message}" >
 <div id="message" class="alert alert-${flash?.params.code}  bg-${flash?.params.code} alert-dismissible fade show" role="alert">
     ${flash.params.message}
@@ -29,7 +29,7 @@
 </div>
 </g:if>
 
-
+</div>
 <div class="container-fluid p-4">
     <div class="row">
         <div class="container col-sm-5 mb-2">
@@ -58,9 +58,7 @@
                                 <div>
                                 <g:render template="starRatingTemplate" model="[user:user,resourc:resourc]"/>
                                 </div>
-                                <div class="ms-2">
-                                ${resourc.ratings.size()}
-                                </div>
+
                             </div>
                         </div>
                     </div>
@@ -104,8 +102,7 @@
                                     </thead>
                     <tbody>
                     <g:each var="topic" in="${trendingTopics}">
-                        <tr><td>
-                            <g:render template="/user/Templates/trendingTopicTemplate" model="[topic: topic, user: user]"/>
+                        <tr><td>   <g:render template="/user/Templates/trendingTopicTemplate" model="[topic: topic, user: user]"/>
                         </td></tr>
                     </g:each>
                     </tbody>
@@ -136,7 +133,7 @@
                 data: {userId: userId, resourceId: resourceId, score: rating},
                 url: '${createLink(controller: 'resourceRating', action: 'createUpdate')}',
                 success:function(response){
-                     // $('.starRating').html(response);
+                    tempAlert("rated successfully",1000)
                 },
                 error:function(error){
 

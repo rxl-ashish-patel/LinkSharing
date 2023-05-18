@@ -29,7 +29,7 @@ class ResourceRatingController {
             return
         }
         else{
-            flash.params=['message':"rating added successfully",code:'success']
+//            flash.params=['message':"rating added successfully",code:'success']
             render view:'_starRatingTemplate',model: [resourc:rating.resource,user:session?.currentUser]
             return
         }

@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 
-<g:render template="/headTemplate" model="[title: '', styles: ['index'],javascript:['searchPageHandler']]"/>
+<g:render template="/headTemplate" model="[title: '', styles: ['index'],javascript:['searchPageHandler','dateFilter']]"/>
 
 <body>
 
@@ -51,25 +51,20 @@
                 </g:each>
                 </tbody>
             </table>
-
-            <table id="topPosts" class="table table-striped display my-1 border rounded" style="width:100%">
-%{--                                <thead>--}%
-%{--                                <tr class="bg-secondary">--}%
-%{--                                    <th>--}%
-%{--                                        <div class="d-flex justify-content-sm-between">--}%
-%{--                                            <h6>Top Posts:</h6>--}%
-%{--                                        </div>--}%
-%{--                                    </th>--}%
-%{--                                </tr>--}%
-%{--                                </thead>--}%
-                <tbody >
-                     <g:each var="post" in="${topPosts.collect { it[1] }}">
-                         <tr><td>
-                         <g:render template="Templates/postTemplate" model="[post:post]"/>
-                         </td></tr>
-                     </g:each>
-                </tbody>
-            </table>
+            <div class="m-3">
+                <div class="form-group mr-3 d-flex col-sm-3">
+                    <label for="filter-select" class="mr-2">Filter:</label>
+                    <select onchange="dateFilter()" class="form-control" id="filter-select">
+                        <option value="1">Today</option>
+                        <option value="7">1 Week</option>
+                        <option value="31">1 Month</option>
+                        <option value="365">1 Year</option>
+                    </select>
+                </div>
+            </div>
+            <div id="topPostsDiv">
+                <g:render template="Templates/topPostDataTableTemplate" model="[topPosts:topPosts]"/>
+            </div>
 
         </div>
 

@@ -18,25 +18,35 @@ class TopicController {
 
 
     def create() {
-        save(topicService.createTopic(params,session.currentUser.id))
-//        redirect action:'index', controller:'user'
-    }
-
-    def save(Topic topic) {
-        if (topic == null) {
-            notFound()
-            return
+        def topic=topicService.createTopic(params,session.currentUser.id)
+        if(topic.hasErrors()){
+            ;
         }
-
-        try {
-            topicService.save(topic)
-            redirect controller: 'subscription',action: 'create',params:[topic:topic.id,user:session.currentUser.id,seriousness:Seriousness.VERY_SERIOUS]
-        } catch (ValidationException e) {
-            respond topic.errors, view:'create'
-            return
+        else{
+            redirect controller: 'subscription',action: 'create',params:[topic:topic.id,user:session.currentUser.id,seriousness:linksharing.Seriousness.VERY_SERIOUS]
         }
-
     }
+     def filterTopPosts(){
+         println(params)
+         def resources=resourceService.filteredTopPosts(Integer.parseInt(params.endDate))
+         render view: '/user/Templates/_topPostDataTableTemplate', model:[topPosts: resources]
+         return
+     }
+//    def save(Topic topic) {
+//        if (topic == null) {
+//            notFound()
+//            return
+//        }
+//
+//        try {
+//            topicService.save(topic)
+//            redirect controller: 'subscription',action: 'create',params:[topic:topic.id,user:session.currentUser.id,seriousness:Seriousness.VERY_SERIOUS]
+//        } catch (ValidationException e) {
+//            respond topic.errors, view:'create'
+//            return
+//        }
+//
+//    }
 
     def update() {
         println params

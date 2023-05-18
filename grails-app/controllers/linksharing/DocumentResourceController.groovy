@@ -17,6 +17,7 @@ class DocumentResourceController {
 
     def create() {
         def documentResource=resourceService.create(params)
+        println params
         if(documentResource.hasErrors()){
             flash.params=['message':"documentResource not added ",code:'danger']
             render view: 'shareDocumentTemplate', model:[topics: userService.getUser(session.currentUser.id).subscribes*.topic, user:userService.getUser(session.currentUser.id), errors:documentResource.errors.allErrors]

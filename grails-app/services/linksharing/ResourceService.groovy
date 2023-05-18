@@ -28,6 +28,24 @@ class ResourceService{
 
         }
     }
+    def filteredTopPosts(Integer endDate){
+        Date today=new Date()
+        return Resource.createCriteria().list {
+            topic {
+                eq('visibility', linksharing.Visibility.PUBLIC)
+            }
+
+            ratings {
+                projections {
+                    avg('score', 'avgRating')
+                }
+                groupProperty('resource')
+            }
+            between('dateCreated',(today - endDate),today)
+            order('avgRating', 'desc')
+
+        }
+    }
 //    def trendingTopics(){
 //        return Resource.createCriteria().list{
 //            topic{
@@ -41,11 +59,12 @@ class ResourceService{
         if(multipartFile.getOriginalFilename()!='' ) {
             def extension = multipartFile.getOriginalFilename().tokenize('.')[-1]
             def bytes = multipartFile.getBytes()
-            def url = "/assets/${UUID.randomUUID()}.${extension}"
+            def filename="${UUID.randomUUID()}.${extension}"
+            def url = "grails-app/assets/document/${filename}"
             def newFile = new File("${url}")
             newFile.createNewFile()
             newFile.append(bytes)
-            return url
+            return "/assets/${filename}"
         }
         else
             return ""
@@ -59,6 +78,7 @@ class ResourceService{
         else
             resource=new LinkResource(params)
         resource.save(flush:true)
+        println "in Resource Service"
         return resource
     }
 

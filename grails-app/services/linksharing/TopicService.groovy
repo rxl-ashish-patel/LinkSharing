@@ -11,7 +11,7 @@ class TopicService{
         println m
         def topic= new Topic(m)
         topic.createdBy=User.get(id);
-
+        topic.save(flush:true)
         return topic
     }
     def get(Long id){

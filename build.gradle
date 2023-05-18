@@ -48,6 +48,7 @@ dependencies {
     compile "org.grails.plugins:gsp"
     compile 'org.apache.commons:commons-email:1.5'
     compile "org.grails.plugins:mail:2.0.0"
+    compile 'org.grails.plugins:converters:3.3.0'
     compile fileTree(dir: 'lib', include: '*.jar')
     runtime 'org.grails.plugins:grails-console:2.1.1'
     profile "org.grails.profiles:web"

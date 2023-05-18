@@ -14,12 +14,12 @@
             <div class="col-sm-8">
                 <div class="card-block">
                     <a href="${createLink(controller: 'topic', action: 'show', params:[topic: topic.id,isSuscribed:(user in (topic.subscriptions*.user))])}" target="_blank">
-                        <h4  id="ht${topic.id}" >
+                        <h4  id="ht${topic.id}" style="color: #040505" >
                             ${topic.name}
                         </h4>
                     </a>
                     <form id="dt${topic.id}" style="display: none"  onsubmit="changeTopicName('${topic.id}')">
-                        <input type="text" name="name"/>
+                        <input type="text" name="name" class="form-control" value="${topic.name}"/>
                         <button type="submit" >save</button>
                         <button type="button" onclick="revertChange('${topic.id}','t')">cancel</button>
                     </form>
@@ -39,8 +39,8 @@
                 <div class="card-block d-flex">
                     <g:if test="${user in topic.subscriptions*.user}">
                         <g:if test="${topic.createdBy!=user}">
-                            <a href="${createLink(controller: 'subscription', action: 'delete', params: [topic: topic.id, user: user.id])}"
-                               class="card-link col-sm-6">UnSuscribe</a>
+                            <a
+                                    onclick="Unsubscribe('${topic.id}','${user.id}')" class="card-link col-sm-6">UnSuscribe</a>
                         </g:if>
                         <g:else>
                             <a class="col-sm-6"></a>
@@ -48,7 +48,8 @@
 
                     </g:if>
                     <g:else>
-                        <a href="${createLink(controller: 'subscription', action: 'create', params: [topic: topic.id, user: user.id, seriousness: "VERY_SERIOUS"])}"
+                        <a onclick="Subscribe('${topic.id}','${user.id}')"
+%{--                                href="${createLink(controller: 'subscription', action: 'create', params: [topic: topic.id, user: user.id, seriousness: "VERY_SERIOUS"])}"--}%
                            class="card-link col-sm-6">Suscribe</a>
                     </g:else>
                     <a href="${createLink(controller: 'user', action: 'showUserProfile', params: [userId: topic.createdBy.id])}"
@@ -63,18 +64,18 @@
         <div class="row">
             <div class="d-inline-flex justify-content-end">
                 <g:if test="${user in topic.subscriptions*.user}">
-                    <g:select id="${topic.id +'-'+ user.id}" name="seriousness" class="updateSeriousness" from="${linksharing.Seriousness.values()}" value="${topic.subscriptions.find{it.user==user}.seriousness}" />
+                    <g:select id="${topic.id +'-'+ user.id}" name="seriousness" class="updateSeriousness" from="${linksharing.Seriousness.values()}" value="${topic.subscriptions.find{it.user==user}.seriousness}" onchange="updateSeriousness(this)"/>
                 </g:if>
                 <g:if test="${user.admin || topic.createdBy == user}">
-                    <g:select id="${topic.id}" class="updateVisibility" name="visibility" from="${linksharing.Visibility.values()}" value="${topic.visibility}"/>
+                    <g:select id="${topic.id+'-'+ user.id}" class="updateVisibility" name="visibility" from="${linksharing.Visibility.values()}" value="${topic.visibility}" onchange="updateVisibility(this)"/>
                     <img onclick="showEditTextarea('${topic.id}','t')" src="${resource(dir: "images", file: "edit.svg")}"/>
                     <a class=""
                        href="${createLink(controller: 'topic', action: 'delete', id: topic.id)}"><img
                             src="${resource(dir: "images", file: "delete.svg")}"/></a>
-                    <a data-bs-toggle="modal" data-bs-target="#sendInvite"
-                       data-bs-whatever="sendInvite"><img
+                    <a data-bs-toggle="modal" data-bs-target="#sendPerticularInvite${topic.id}"
+                       data-bs-whatever="sendPerticularInvite${topic.id}"><img
                             src="${resource(dir: "images", file: "sendInvite.svg")}"/></a>
-
+                    <g:render template="/user/Templates/sendPerticularInvite" model="[topic:topic]"/>
                 </g:if>
 
             </div>

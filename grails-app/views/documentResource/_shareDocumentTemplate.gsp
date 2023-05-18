@@ -18,12 +18,9 @@
                     <div class="mb-3 d-flex justify-content-between">
                         <g:hiddenField name="createdBy" value="${user.id}"/>
                         <label for="message-text" class="col-form-label me-5">Topic:</label>
-                        <select class="form-select" name="topic" aria-label="Default select example">
-                            <option selected>Topics</option>
-                            <g:each var="topic" in="${topics}">
-                                <option value="${topic.id}">${topic.name}</option>
-                            </g:each>
-                        </select>
+                        <div class="selectTopicDiv">
+                            <g:render template="/user/Templates/topicListSelector" model="[topics:topics]"/>
+                        </div>
                     </div>
                     <div class="modal-footer">
                         <g:actionSubmit   class="btn btn-primary"   value="submit" action="create">

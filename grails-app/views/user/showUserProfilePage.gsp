@@ -1,13 +1,14 @@
 <%@ page import="linksharing.Visibility" contentType="text/html;charset=UTF-8" %>
 <html>
 <g:render template="/headTemplate"
-          model="[title: '', styles: ['index', 'dashboard'], javascript: ['userProfileUpdateHandler']]"/>
+          model="[title: 'User Profile', styles: ['index', 'dashboard'], javascript: ['userProfileUpdateHandler']]"/>
 
 
 <body>
 
 <div class="navBarBorder">
     <g:render template="/navBarTemplate" model="[icons: ['user', 'down'],user:currentUser]"/>
+
 </div>
 
 <div class="container-fluid p-4">
@@ -21,8 +22,8 @@
             </div>
 
             <div class="table">
-%{--                <g:render template="Templates/subscriptionsOrTopicDataTableTemplate"--}%
-%{--                          model="[topics: subscriptions, currentUser: currentUser, user: profileUser,heading:'subscription']"/>--}%
+                <g:render template="Templates/subscriptionsOrTopicDataTableTemplate"
+                          model="[topics: subscriptions, currentUser: currentUser, user: profileUser,heading:'subscription']"/>
             </div>
 
         </div>
@@ -30,35 +31,35 @@
         <div class="container col-sm-7">
             <div class="table">
                 <table id="inboxItems" class="table table-striped display" style="width:100%">
-%{--                                    <thead>--}%
-%{--                                    <tr class="bg-secondary">--}%
-%{--                                        <th>Inbox:</th>--}%
-%{--                                        <th>search</th>--}%
-%{--                                    </tr>--}%
+                                    <thead>
+                                    <tr class="bg-secondary">
+                                        <th>Inbox:</th>
+                                        <th>search</th>
+                                    </tr>
 
-%{--                                    </thead>--}%
+                                    </thead>
                     <tbody >
-%{--                    <g:each var="resourc" in="${(profileUser==currentUser || currentUser.admin )?profileUser.resources:profileUser.resources.findAll{it.topic.visibility==linksharing.Visibility.PUBLIC}}">--}%
-%{--                        <tr>--}%
-%{--                            <td>--}%
-%{--                                <g:if test="${resourc.topic in currentUser.subscribes*.topic}">--}%
+                    <g:each var="resourc" in="${(profileUser==currentUser || currentUser.admin )?profileUser.resources:profileUser.resources.findAll{it.topic.visibility==linksharing.Visibility.PUBLIC}}">
+                        <tr>
+                            <td>
+                                <g:if test="${resourc.topic in currentUser.subscribes*.topic}">
 
-%{--                                    <g:render template="Templates/inboxTemplate" model="[resourc:resourc,user:currentUser,isSuscribed:true]"/>--}%
-%{--                                </g:if>--}%
-%{--                                <g:else>--}%
-%{--                                    <g:render template="Templates/inboxTemplate" model="[resourc:resourc,user:currentUser,isSuscribed:false]"/>--}%
-%{--                                </g:else>--}%
-%{--                            </td>--}%
-%{--                            <td >--}%
-%{--                                <div>--}%
-%{--                                    <p>${resourc?.topic.name}</p>--}%
-%{--                                    <p>${resourc?.createdBy.firstName}</p>--}%
-%{--                                    <p>${resourc?.createdBy.username}</p>--}%
-%{--                                    <p>${resourc?.description}</p>--}%
-%{--                                </div>--}%
-%{--                            </td>--}%
-%{--                        </tr>--}%
-%{--                    </g:each>--}%
+                                    <g:render template="Templates/inboxTemplate" model="[resourc:resourc,user:currentUser,isSuscribed:true]"/>
+                                </g:if>
+                                <g:else>
+                                    <g:render template="Templates/inboxTemplate" model="[resourc:resourc,user:currentUser,isSuscribed:false]"/>
+                                </g:else>
+                            </td>
+                            <td >
+                                <div>
+                                    <p>${resourc?.topic.name}</p>
+                                    <p>${resourc?.createdBy.firstName}</p>
+                                    <p>${resourc?.createdBy.username}</p>
+                                    <p>${resourc?.description}</p>
+                                </div>
+                            </td>
+                        </tr>
+                    </g:each>
                     </tbody>
                 </table>
 

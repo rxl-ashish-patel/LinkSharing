@@ -2,7 +2,7 @@
 <!DOCTYPE html>
 <html lang="en">
 
-<g:render template="/headTemplate" model="[title: '', styles: ['index', 'dashboard'], javaScript:['markAsRead']]"/>
+<g:render template="/headTemplate" model="[title: 'search', styles: ['index', 'dashboard'],javascript:['editTopicName','searchPageHandler','markAsRead','sendInviteHandler']]"/>
 
 
 <body>

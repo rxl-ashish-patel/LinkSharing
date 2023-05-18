@@ -8,7 +8,12 @@ function markAsRead(resourceId,userId){
         },
         url:'readingItem/update',
         success:function (response){
-            window.location.reload()
+            console.log(response)
+            $('#inboxDiv').html(response);
+            $("#inboxItemsTable").dataTable({
+                "bLengthChange": false, // remove "Show" option
+                "pageLength": 20,
+            })
         },
         error:function(error){
 

@@ -44,11 +44,23 @@ class SubscriptionController {
         }
 
     }
+    def createOwnTopicSubscription(){
+        def subscription=subscriptionService.create(params)
+        render " "
+        return
+    }
     def create() {
         println params
-        save(subscriptionService.create(params))
-//        render params
-        redirect controller:'readingItem',action:'create',params:[topic:params.topic,email:session.currentUser.email,isRead:false]
+        def subscription=subscriptionService.create(params)
+        println('subscription '+subscription)
+        println subscription.topic.resources.size()==0
+//        def topic=Topic.get(params.topic)
+        if(subscription.topic.resources.size()==0) {
+            render "Hello"
+            return
+        }
+        else
+           redirect controller:'readingItem',action:'create',params:[topic:params.topic,user:params.user,isRead:false]
     }
 
     def save(Subscription subscription) {
@@ -60,23 +72,11 @@ class SubscriptionController {
         try {
             subscriptionService.save(subscription)
         } catch (ValidationException e) {
-            respond subscription.errors, view:'create'
+            respond subscription.errors, view: 'create'
             return
         }
-
-//        request.withFormat {
-//            form multipartForm {
-//                flash.message = message(code: 'default.created.message', args: [message(code: 'subscription.label', default: 'Subscription'), subscription.id])
-//                redirect subscription
-//            }
-//            '*' { respond subscription, [status: CREATED] }
-//        }
     }
 
-//    def update(Long id) {
-//        render params
-////        respond subscriptionService.get(id)
-//    }
 
     def update() {
         if (params == null) {
@@ -93,13 +93,6 @@ class SubscriptionController {
             return
         }
 
-        request.withFormat {
-            form multipartForm {
-                flash.message = message(code: 'default.updated.message', args: [message(code: 'subscription.label', default: 'Subscription'), subscription.id])
-                redirect subscription
-            }
-            '*'{ respond subscription, [status: OK] }
-        }
     }
 
     def delete() {
@@ -109,23 +102,6 @@ class SubscriptionController {
         }
 
         subscriptionService.delete(params)
-        redirect controller:'readingItem',action:'delete',params:[topic:params.topic,email:session.currentUser.email,isRead:false]
-//        request.withFormat {
-//            form multipartForm {
-//                flash.message = message(code: 'default.deleted.message', args: [message(code: 'subscription.label', default: 'Subscription'), id])
-//                redirect action:"index", method:"GET"
-//            }
-//            '*'{ render status: NO_CONTENT }
-//        }
-    }
-
-    protected void notFound() {
-        request.withFormat {
-            form multipartForm {
-                flash.message = message(code: 'default.not.found.message', args: [message(code: 'subscription.label', default: 'Subscription'), params.id])
-                redirect action: "index", method: "GET"
-            }
-            '*'{ render status: NOT_FOUND }
-        }
+        redirect controller:'readingItem',action:'delete',params:[topic:params.topic,user:params.user]
     }
 }

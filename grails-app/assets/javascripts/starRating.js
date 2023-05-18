@@ -1,9 +1,18 @@
+function tempAlert(msg,duration)
+{
+    var el = document.createElement("div");
+    el.setAttribute("style","position:absolute;top:40%;left:20%;background-color:green;");
+    el.innerHTML = msg;
+    setTimeout(function(){
+        el.parentNode.removeChild(el);
+    },duration);
+    document.body.appendChild(el);
+}
 $(document).ready(function() {
     const stars = $('.star');
     stars.click(function() {
         stars.removeClass('active');
         $(this).prevAll().addBack().addClass('active');
-        console.log("mouse click")
     });
 
     // Add mouseover event listener to each star

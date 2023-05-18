@@ -7,6 +7,7 @@ class ReadingItemController {
 
     ReadingItemService readingItemService
     UserService userService
+    TopicService topicService
 
 //    static allowedMethods = [save: "POST", update: "PUT", delete: "DELETE"]
 
@@ -20,16 +21,16 @@ class ReadingItemController {
     }
      def create() {
 //        render params
-          def user=User.findByEmail(params.email)
-          def topic=Topic.get(params.topic)
+          def user=userService.getUser(Integer.parseInt(params.user))
+          def topic=Topic.get(Integer.parseInt(params.topic))
           def resources=topic.resources
           resources.each{
 
-              readingItemService.create(user:user.id,resource:it.id,isRead:false)
+              readingItemService.create(user:user,resource:it,isRead:false)
           }
-          if(user==session?.currentUser) {
-              flash.params=[message :"subscribed successfully",code:'warning']
-              redirect controller: 'user'
+          if(user.id==session?.currentUser.id) {
+              flash.params=[message :"subscribed successfully",code:'success']
+              render view: '/user/Templates/_inboxDataTable' ,model:[user:userService.getUser(Integer.parseInt(params.user))]
               return
               }
           else{
@@ -57,13 +58,13 @@ class ReadingItemController {
     def update(){
         def user=userService.getUser(Integer.parseInt(params.userId))
         def resource=Resource.get(params.resourceId)
-        println user
-        println resource
         ReadingItem readingItem=ReadingItem.findByUserAndResource(user,resource)
         println readingItem
         readingItem.isRead=true
         try {
             readingItem.save(flush:true)
+            render view: '/user/Templates/_inboxDataTable' ,model:[user: user]
+            return
 
         } catch (ValidationException e) {
             respond readingItem.errors, view:'edit'
@@ -71,36 +72,14 @@ class ReadingItemController {
         }
         render ''
         return
-//        request.withFormat {
-//            form multipartForm {
-//                flash.message = message(code: 'default.updated.message', args: [message(code: 'readingItem.label', default: 'ReadingItem'), readingItem.id])
-//                redirect readingItem
-//            }
-//            '*'{ respond readingItem, [status: OK] }
-//        }
-//        redirect controller:'user'
     }
 
     def delete(Long id) {
-//        if (id == null) {
-//            notFound()
-//            return
-//        }
-//
-//        readingItemService.delete(id)
-//
-//        request.withFormat {
-//            form multipartForm {
-//                flash.message = message(code: 'default.deleted.message', args: [message(code: 'readingItem.label', default: 'ReadingItem'), id])
-//                redirect action:"index", method:"GET"
-//            }
-//            '*'{ render status: NO_CONTENT }
-//        }
-        def user=User.findByEmail(params.email)
+        def user=User.get(params.user)
         def topic=Topic.get(params.topic)
         topic.resources.each{
             ReadingItem.findByResourceAndUser(it,user).delete(flush: true)}
-        redirect controller:'user'
+        render view: '/user/Templates/_inboxDataTable' ,model:[user:user]
     }
 }
 

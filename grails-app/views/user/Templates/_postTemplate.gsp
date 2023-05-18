@@ -3,7 +3,7 @@
         <div class="row  align-items-center">
             <div class="col-sm-3 ">
                 <img class="card-img-top userImage "
-                     src="${resource(dir: 'images', file: "profilePicture/${post.createdBy.photo ?: 'user.svg'}")}"
+                     src="${resource(dir: 'images', file: "${post.createdBy.photo ?: 'user.svg'}")}"
                      alt="Card image cap">
             </div>
 

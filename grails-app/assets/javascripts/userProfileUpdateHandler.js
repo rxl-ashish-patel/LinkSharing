@@ -57,11 +57,17 @@ function userStatusUpdateHandler(userId,status){
             },
             url: "/user/update",
             success: function (response) {
-                if(status)
-                    alert("user activated")
-                else
-                    alert("user deactivated")
+                // if(status)
+                //     alert("user activated")
+                // else
+                //     alert("user deactivated")
                 window.location.reload()
+                    console.log(response)
+                   //  let table=$('example').DataTable()
+                   //  let targetRow = table.row('#' + userId)
+                   //  targetRow.data(response);
+                   // table.draw();
+                    // $("#{userId}").html(response)
             },
             error: function (errorThrown) {
                 console.log('Error:', errorThrown);

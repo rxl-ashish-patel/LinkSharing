@@ -6,7 +6,7 @@
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-                <g:form action="create" controller="topic">
+                <form onsubmit="createTopic('${user.id}')">
                     <div class="mb-3 d-flex ">
                         <label for="recipient-name " class="col-form-label me-5">Topic: </label>
                         <input type="text" class="form-control" name="name"  id="topic">
@@ -24,7 +24,7 @@
                         <button type="submit" class="btn btn-primary">Save </button>
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
                     </div>
-                </g:form>
+                </form>
             </div>
 
         </div>

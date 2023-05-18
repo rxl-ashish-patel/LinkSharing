@@ -8,7 +8,7 @@ function searchPageHandler(userId){
             userId:userId,
             payload:payload
         },
-        url:'topic/searchData',
+        url:'/topic/searchData',
         success:function (response){
             var newTab = window.open();
             newTab.document.write(response);
