@@ -75,14 +75,16 @@ $(document).ready(function (){
     $("#trendingTopicsTable").dataTable({
             "bLengthChange": false, // remove "Show" option
             "pageLength": 5,
-            "searching": false
+            "searching": false,
+            "ordering":false
         })
 
     //subscriptions datatable
         $("#SubscriptionsTable").dataTable({
             "bLengthChange": false, // remove "Show" option
             "pageLength": 5,
-            "searching": false
+            "searching": false,
+            "ordering":false
         })
 
     });
